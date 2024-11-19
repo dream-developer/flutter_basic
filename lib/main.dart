@@ -15,34 +15,28 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Flutter Demo Home Page'), // constを外す
     );
   }
 }
 
-class MyHomePage extends StatefulWidget { // 2
-  const MyHomePage({super.key, required this.title});
+class MyHomePage extends StatelessWidget { 
+  MyHomePage({super.key, required this.title}); // constを外す
   final String title;
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState(); // 3
-}
+  int _counter = 0; // ２
 
-class _MyHomePageState extends State<MyHomePage> { // 1
-  int _counter = 0; // カウント変数
-
-  void _incrementCounter() { // ボタン押下時に呼ばれている関数
-    setState(() { // 5
-      _counter++;
-    });
+  void _incrementCounter() {  // ３
+     _counter++; 
+     print(_counter); // 1 2 3 …
   }
 
   @override
-  Widget build(BuildContext context) { // 4
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: Text(title), // widget.title → title
       ),
       body: Center(
         child: Column(
