@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // 1
+import 'package:flutter/services.dart'; //「services.dart」のインポート
 
 void main() {
-  const text = Text('テキスト'); // 2
-
-  final textFocus = Focus ( // 3
-    autofocus: true, // 4
-    onKeyEvent: (node, event) { // 5
-      final key = event.logicalKey; // 6
-      if (event is KeyDownEvent) { // 7
-        if ( key == LogicalKeyboardKey.enter ) { // 8
-          print('Enterキーが押されました'); // 9
-          return KeyEventResult. handled; // 10
-        }
-      }
-      return KeyEventResult.ignored; // 10
-    },
-    child: text, // 対象ウィジェットを指定
+  final controller = TextEditingController(); // Textコントローラー
+  final addTextField = TextField( // 1
+    autofocus: true,
+    controller: controller,
   );
 
-  final sc = Scaffold( body: textFocus, );
+  final addTextFieldFocus = Focus(
+    autofocus: false, // 2
+    onKeyEvent: (node, event) { 
+      final key = event.logicalKey;
+      if (event is KeyDownEvent) { 
+        if ( key == LogicalKeyboardKey.enter ) {
+          print(controller.text); // Enterキー押下で入力内容を出力
+          return KeyEventResult. handled;
+        }
+      }
+      return KeyEventResult.ignored;
+    },
+    child: addTextField, // 対象ウィジェットを指定
+  );
+
+  final sc = Scaffold( body: addTextFieldFocus, );
   final app = MaterialApp(home: sc);
   runApp(app);
 }
