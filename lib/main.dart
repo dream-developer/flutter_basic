@@ -1,22 +1,40 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  final textFormField = TextFormField( // 1
-    validator: (value) { // 2
-      if (value!.isEmpty) { // 3
+  final textFormField = TextFormField(
+    validator: (value) {
+      if (value!.isEmpty) {
         return '入力されてません';
       }
-      return null; // 4
+      return null;
     },
   );
 
-  final form = Form( // 5
+  const formKey = GlobalObjectKey<FormState>('FORM_KEY');  // 1
+
+  final form = Form(
+    key: formKey, // 2
     autovalidateMode: AutovalidateMode.always,
     child: textFormField, 
   );
 
-  final body = form; // ボディー 
+  final button = ElevatedButton( // 3
+    onPressed: () {
+      if (formKey.currentState!.validate()) { // 4
+        print("バリデート通過時の処理");
+      }else{
+        print("バリデートエラー時の処理");
+      }
+    },
+    child: const Text("ボタン"),
+  );
 
+  final body = Column( // ボディー
+    children: [
+      form, 
+      button,
+    ],
+  );
   final sc = Scaffold( // ボディー
     body: body,
   );
