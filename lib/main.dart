@@ -3,8 +3,12 @@ import 'package:flutter/services.dart'; // これを追加
 
 class TestIntent extends Intent {} // インテントクラス
 
-void test() { // インテント時の処理関数
-  print('「Control + N」が押されました');
+// void test() { // インテント時の処理関数
+//   print('「Control + N」が押されました');
+// }
+void test() async{ // インテント時の処理関数（非同期の例）
+  await Future.delayed(const Duration(seconds: 10));
+  print('「Control + N」が押された10秒後に実行');
 }
 
 void main() {
