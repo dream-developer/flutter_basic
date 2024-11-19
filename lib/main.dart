@@ -32,6 +32,11 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final flist =[1, 2];
+    const clist =[1, 2];
+    flist[0] = 3;
+    clist[0] = 3; // 例外が発生する
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
