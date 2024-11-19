@@ -1,60 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // 1
 
 void main() {
-  runApp(const MyApp());
-}
+  const text = Text('テキスト'); // 2
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget { 
-  const MyHomePage({super.key, required this.title});
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState(); 
-}
-
-class _MyHomePageState extends State<MyHomePage> { 
-  Stream<List<String>> _myWatchEntries() async* { // 1
-    final List<String> datas = [];
-    for (int i = 1; i <= 10; i++) {
-      datas.add("データ:$i");
-      await Future.delayed(const Duration(seconds: 1));
-      yield datas;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final list = StreamBuilder( // 2
-        stream: _myWatchEntries(), // 3
-        builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) { // 4
-          if (snapshot.connectionState == ConnectionState.waiting) { // 5
-            return const CircularProgressIndicator();
-          }
-
-          final List<String>  datas = snapshot.data ?? []; // 6
-
-          return ListView.builder( // 7
-            itemCount: datas.length,
-            itemBuilder: (c, i) => Text(datas[i]), 
-          );
+  final textFocus = Focus ( // 3
+    autofocus: true, // 4
+    onKeyEvent: (node, event) { // 5
+      final key = event.logicalKey; // 6
+      if (event is KeyDownEvent) { // 7
+        if ( key == LogicalKeyboardKey.enter ) { // 8
+          print('Enterキーが押されました'); // 9
+          return KeyEventResult. handled; // 10
         }
-    );
-    return Scaffold(body: list);
-  }
+      }
+      return KeyEventResult.ignored; // 10
+    },
+    child: text, // 対象ウィジェットを指定
+  );
+
+  final sc = Scaffold( body: textFocus, );
+  final app = MaterialApp(home: sc);
+  runApp(app);
 }
