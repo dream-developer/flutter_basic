@@ -15,20 +15,19 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'), // constを外す
+      home: const MyHomePage(title: 'Flutter Demo Home Page'), // constを付ける
     );
   }
 }
 
-class MyHomePage extends StatelessWidget { 
-  MyHomePage({super.key, required this.title}); // constを外す
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key, required this.title}); // ３
   final String title;
 
-  int _counter = 0; // ２
+  final _counter = 0; // １
 
-  void _incrementCounter() {  // ３
-     _counter++; 
-     print(_counter); // 1 2 3 …
+  void _incrementCounter() {
+    // _counter++; ２
   }
 
   @override
