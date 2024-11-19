@@ -15,52 +15,201 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'), // constを付ける
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key, required this.title}); // ３
+class MyHomePage extends StatefulWidget { 
+  const MyHomePage({super.key, required this.title});
   final String title;
 
-  final _counter = 0; // １
+  @override
+  State<MyHomePage> createState() => _MyHomePageState(); 
+}
 
-  void _incrementCounter() {
-    // _counter++; ２
-  }
+class _MyHomePageState extends State<MyHomePage> { 
+  String _msg = ""; // テキストフィールド用
+  bool _isChecked = false; // チェックボックス用
+  int _radioValue = 0; // ラジオボタン用
+  bool _isOn = false; // スイッチ用
 
   @override
   Widget build(BuildContext context) {
-    final flist =[1, 2];
-    const clist =[1, 2];
-    flist[0] = 3;
-    clist[0] = 3; // 例外が発生する
+    // ●テキスト
+    const text = Text('テキスト');
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(title), // widget.title → title
+    const textArea = Column( children: [ text,], );
+
+    // ●ボタン
+    final button = ElevatedButton(
+      onPressed: () { // 1
+        print("ボタンが");
+        print("押されました");
+      },
+      child: const Text("ボタン"), // 2
+    );
+
+    // ・テキストボタン
+    fn(){ print("関数実行"); }
+
+    final textbutton =TextButton(
+      onPressed: fn,
+      child: const Text("テキストボタン"),
+    );
+
+    final buttonArea = Row(
+      children: [
+        button,
+        textbutton,
+      ],
+    );
+
+    // ●テキストフィールド
+    // String _msg = ""; ← クラスメンバにて宣言済み
+    final textfieldText  = Text('メッセージ：$_msg'); // 1
+    final controller = TextEditingController(); // 2
+
+    final textfield = TextField( // 3
+      controller: controller, // 4
+      autofocus: true, // 5
+      decoration: const InputDecoration( // 6
+        border: OutlineInputBorder(),
+        labelText: "内容",
+        hintText: "100文字以内で入力してください",
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+      onChanged: (text) { // 7
+        print("value: $text");
+      },
+    );
+
+    setMsg() { // 1
+      setState(() {
+        _msg = controller.text; 
+      });
+    }
+
+    clear() { controller.clear(); } // 2
+
+    final setMsgButton = ElevatedButton( // 3
+      onPressed: setMsg,
+      child: const Text("反映"),
+    );
+
+    final clearButton = ElevatedButton( // 4
+      onPressed: clear,
+      child: const Text("クリア"),
+    );
+
+    final textfieldArea = Column(
+      children: [
+        textfieldText,
+        textfield,
+        Row( // 入れ子
+          children: [
+            setMsgButton,
+            clearButton,
           ],
         ),
+      ],
+    );
+
+    // ●チェックボックス
+    // bool _isChecked = false; ← クラスメンバにて宣言済み
+    final isCheckedText = Text("チェック：${_isChecked ? "オン": "オフ"}"); // 1
+
+    final checkbox = Checkbox( // 2
+      value: _isChecked,
+      onChanged: (bool? value) {
+        setState(() {
+          _isChecked = value!;
+        });
+      },
+    );
+    
+    const checkboxText = Text("チェックボックス"); 
+
+    final checkboxArea = Row(
+      children: [
+        isCheckedText,
+        checkbox,
+        checkboxText,
+      ],
+    );
+
+    // ●ラジオボタン
+    // int _radioValue = 0; ← クラスメンバにて宣言済み
+    final radio1 =  Radio( // 1
+      value: 1, // 2
+      groupValue: _radioValue, // 3
+      onChanged: (value) { // 4
+        setState(() {
+          _radioValue = value!;
+        });
+      }
+    );
+    const radiotext1 = Text('Android');
+
+    final radio2 =  Radio(
+      value: 2,
+      groupValue: _radioValue,
+      onChanged: (value) {
+        setState(() {
+          _radioValue = value!;
+        });
+      }
+    );
+    const radiotext2 = Text('iOS');
+
+    const radioMap = { 0: "未選択", 1: "Android", 2: "iOS", }; // 表示用
+    final radioText = Text("デバイス：${radioMap[_radioValue]}");
+
+    final radioArea = Row(
+      children: [
+        radio1,
+        radiotext1,
+        const SizedBox(width: 10.0), // スペースを開ける
+        radio2,
+        radiotext2,
+        const SizedBox(width: 20.0), // スペースを開ける
+        radioText,
+      ],
+    );
+ 
+    // ●スイッチ
+    // クラスメンバで bool _isOn = false;  済み
+    final switchText = Text(_isOn ? "オン": "オフ"); // 1
+    final toggle = Switch( // 2
+      value: _isOn, // 3
+      onChanged: (value) { // 4
+        setState(() {
+          _isOn = value;
+        });
+      },
+    );
+
+    final switchArea = Row(
+      children: [
+        switchText,
+        toggle,
+      ],
+    );
+
+    final body = SafeArea( // ボディー
+      child: Column(
+        children: [
+          textArea, // テキスト関連
+          buttonArea, // ボタン関連
+          textfieldArea, // テキストフィールド関連
+          checkboxArea, // チェックボックス関連
+          radioArea, // ラジオボタン関連
+          switchArea, // スイッチ関連
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), 
+    );
+
+    return Scaffold(
+      body: body, // ボディー
     );
   }
 }
