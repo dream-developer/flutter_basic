@@ -1,44 +1,81 @@
 import 'package:flutter/material.dart';
 
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    );
+  }
+}
+
 class User { // Userクラス
   final int id; // ユーザーID
   final String name; // ユーザー名
   User(this.id, this.name);
 }
 
-List<User> users = []; // User型のList 
+class MyHomePage extends StatefulWidget { 
+  const MyHomePage({super.key, required this.title});
+  final String title;
 
-void main() {
-  for (int i = 1; i <= 50; i++) { // Listに50個分要素を追加。
-    users.add(User(i, 'ユーザー$i'));
+  @override
+  State<MyHomePage> createState() => _MyHomePageState(); 
+}
+
+class _MyHomePageState extends State<MyHomePage> { 
+
+  final List<User> _users = []; // User型のList
+
+  _MyHomePageState(){
+    for (int i = 1; i <= 50; i++) { // Listに50個分要素を追加。
+      _users.add(User(i, 'ユーザー$i'));
+    }
   }
 
-  final list = ListView.builder(
-    itemCount: users.length,
-    itemBuilder: (c, i) => 
-      ListTile( // 1
-        key: Key((users[i].id).toString()), // 2
-        leading: const Icon(Icons.person), // 3
-        title: Text(users[i].name), // 4
-        subtitle: Text("id:${users[i].id}"), // 5
-        trailing: const Icon(Icons.edit), // 6
-    ),
-  );
-
-  final body = Column( // ボディー
-    children: [
-      const Text('リストの上'), 
-      Expanded( 
-        child: list,
+  @override
+  Widget build(BuildContext context) {
+    final list = ReorderableListView.builder( // 1
+      onReorder: (int oldIndex, int newIndex) { // 2
+        setState(() { // 3
+          if (oldIndex < newIndex) {
+            newIndex -= 1;
+          }
+          final User user = _users.removeAt(oldIndex);
+          _users.insert(newIndex, user);
+        });  
+      },
+      itemCount: _users.length,
+      itemBuilder: (c, i) => 
+        ListTile(
+          key: Key((_users[i].id).toString()), // 4
+          title: Text(_users[i].name), 
       ),
-      const Text('リストの下'), 
-    ],
-  );
+    );
+    
+    final body = Column( // ボディー
+      children: [
+        const Text('リストの上'), 
+        Expanded( 
+          child: list,
+        ),
+        const Text('リストの下'), 
+      ],
+    );
 
-  final sc = Scaffold(
-    body: body,
-  );
-
-  final app = MaterialApp(home: sc);
-  runApp(app);
+    return Scaffold(
+      body: body, // ボディー
+    );
+  }
 }
